@@ -1,0 +1,79 @@
+.container {
+    /* Content is centered horizontally */
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.container__column {
+    /* Content is centered vertically */
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    /* Make all columns have the same width */
+    flex: 1;
+
+    /* OPTIONAL: Space between columns */
+    margin: 0 8px;
+    margin-top: 5%;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    width: 90%;
+    border-radius: 25px;
+    height: 360px;
+}
+
+.card__cover {
+    height: 150px;
+    width: 100%;
+}
+
+.card__content {
+    display: flex;
+    margin: 20px;
+    /* Border */
+}
+
+.container__input {
+    border-color: transparent;
+    /* Take available width */
+    flex: 1;
+    height: 60px;
+}
+
+.card__title {
+    font-family: "微软雅黑", "黑体", "宋体";
+    font-size: 40px;
+
+    margin: 20px;
+}
+
+.el-select .el-input {
+    width: 110px;
+}
+
+.input-with-select .el-input-group__prepend {
+    background-color: #fff;
+}
+
+#send__card {
+    background-image: url("@/assets/login_background.jpg");
+    background-size: cover;
+}
+
+#retrieve__card {
+    background-image: url("@/assets/login_background.jpg");
+    background-size: cover;
+}
+
+.send__area {
+    & {
+        border-radius: 25px;
+        font-size: 24px;
+    }
+}

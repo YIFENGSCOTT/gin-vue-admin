@@ -7,6 +7,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/request"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/common/response"
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
+	"github.com/flipped-aurora/gin-vue-admin/server/utils"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 )
@@ -29,11 +30,13 @@ func (exMessageApi *ExMessageApi) CreateExMessage(c *gin.Context) {
 	var exMessage MessageExpress.ExMessage
 	_ = c.ShouldBindJSON(&exMessage)
 	// todo：加一段逻辑来生成code和pin
+	exMessage.Code = utils.GenerateCode()
+	exMessage.Pin = utils.BcryptHash(exMessage.Secret)
 	if err := exMessageService.CreateExMessage(exMessage); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
-		response.OkWithMessage("创建成功", c)
+		response.OkWithMessage("创建成功, \n 密钥是 "+exMessage.Pin+", \n 暗语是 "+exMessage.Code, c)
 	}
 }
 

@@ -81,7 +81,7 @@ export default {
   methods: {
     async submitMsg() {
       await createExMessage({secret: this.textarea1}).then((res) => {
-        alert(JSON.stringify(res));
+        alert(res.msg);
       });
     },
   },

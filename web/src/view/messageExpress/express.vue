@@ -55,6 +55,19 @@
         </div>
       </div>
     </div>
+    <el-dialog title="完成" v-model="dialogTableVisible">
+      <el-table :data="codenpin" style="width: 100%">
+        <el-table-column label="密文已寄送" prop="type"> </el-table-column>
+        <el-table-column label="" prop="name"> </el-table-column>
+        <el-table-column fixed="right" label="" width="60">
+          <template #default="scope">
+            <el-button type="text" size="small" @click="handleClick(scope.row)"
+              >复制到剪切板</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -76,13 +89,37 @@ export default {
       input3: "",
       select: "",
       radio1: "New York",
+      dialogTableVisible: false,
+      codenpin: [
+        {
+          type: "密钥",
+          name: "mymymymymymmymy",
+        },
+        {
+          type: "暗语",
+          name: "ayayayyayayayayay",
+        },
+      ],
     };
   },
   methods: {
     async submitMsg() {
-      await createExMessage({secret: this.textarea1}).then((res) => {
-        alert(res.msg);
-      });
+      await createExMessage({ secret: this.textarea1 }).then((res) => {});
+      // this.codenpin[0].name = res.msg.pin
+      // this.codenpin[1].name = res.msg.code
+      this.dialogTableVisible = true;
+    },
+    handleClick(val) {
+      console.log(val.name);
+      const input = document.createElement("input");
+      document.body.appendChild(input);
+      input.setAttribute("value", val.name);
+      input.select();
+      if (document.execCommand("copy")) {
+        document.execCommand("copy");
+        alert("复制成功");
+      }
+      document.body.removeChild(input);
     },
   },
 };

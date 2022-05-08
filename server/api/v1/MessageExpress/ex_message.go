@@ -28,6 +28,7 @@ var exMessageService = service.ServiceGroupApp.MessageExpressServiceGroup.ExMess
 func (exMessageApi *ExMessageApi) CreateExMessage(c *gin.Context) {
 	var exMessage MessageExpress.ExMessage
 	_ = c.ShouldBindJSON(&exMessage)
+	// todo：加一段逻辑来生成code和pin
 	if err := exMessageService.CreateExMessage(exMessage); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)

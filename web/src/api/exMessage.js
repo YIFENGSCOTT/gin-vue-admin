@@ -79,6 +79,36 @@ export const findExMessage = (params) => {
     params
   })
 }
+// @Tags ExMessage
+// @Summary 用code查询ExMessage
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query model.ExMessage true "用code查询ExMessage"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /exMessage/findExMessageByCode [get]
+export const findExMessageByCode = (params) => {
+  return service({
+    url: '/exMessage/findExMessageByCode',
+    method: 'get',
+    params
+  })
+}
+// @Tags ExMessage
+// @Summary 用pin查询ExMessage
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query model.ExMessage true "用pin查询ExMessage"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /exMessage/findExMessageByPin [get]
+export const findExMessageByPin = (params) => {
+  return service({
+    url: '/exMessage/findExMessageByPin',
+    method: 'get',
+    params
+  })
+}
 
 // @Tags ExMessage
 // @Summary 分页获取ExMessage列表

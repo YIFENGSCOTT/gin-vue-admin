@@ -31,8 +31,8 @@
           <div class="selections">
             <div style="margin: 20px">
               <el-radio-group v-model="radio1">
-                <el-radio-button label="密钥"></el-radio-button>
                 <el-radio-button label="暗语"></el-radio-button>
+                <el-radio-button label="密钥"></el-radio-button>
               </el-radio-group>
             </div>
             <div class="card__content">
@@ -47,7 +47,7 @@
               </el-input>
             </div>
             <div>
-              <el-button type="primary" style="margin: 20px"
+              <el-button type="primary" style="margin: 20px" @click="submitFetch"
                 >取出密文</el-button
               >
             </div>
@@ -78,6 +78,7 @@
 
 <script>
 import { createExMessage } from "@/api/exMessage";
+import { findExMessage } from "@/api/exMessage";
 
 export default {
   data() {
@@ -88,7 +89,7 @@ export default {
       input2: "",
       input3: "",
       select: "",
-      radio1: "New York",
+      radio1: "暗语",
       dialogTableVisible: false,
       codenpin: [
         {
@@ -104,9 +105,11 @@ export default {
   },
   methods: {
     async submitMsg() {
-      await createExMessage({ secret: this.textarea1 }).then((res) => {});
-      // this.codenpin[0].name = res.msg.pin
-      // this.codenpin[1].name = res.msg.code
+      await createExMessage({ secret: this.textarea1 }).then((res) => {
+      console.log(res)
+      this.codenpin[0].name = res.data.pin
+      this.codenpin[1].name = res.data.code
+      });
       this.dialogTableVisible = true;
     },
     handleClick(val) {
@@ -121,6 +124,11 @@ export default {
       }
       document.body.removeChild(input);
     },
+    async submitFetch() {
+      await findExMessage({flag: this.radio1, query: this.textarea2 }).then((res) => {
+      console.log(res)
+      });
+    }
   },
 };
 </script>

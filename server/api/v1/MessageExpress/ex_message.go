@@ -36,7 +36,7 @@ func (exMessageApi *ExMessageApi) CreateExMessage(c *gin.Context) {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
-		response.OkWithMessage("创建成功, \n 密钥是 "+exMessage.Pin+", \n 暗语是 "+exMessage.Code, c)
+		response.OkWithData(gin.H{"pin": exMessage.Pin, "code": exMessage.Code}, c)
 	}
 }
 

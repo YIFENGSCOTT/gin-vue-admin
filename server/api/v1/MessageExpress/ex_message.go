@@ -32,6 +32,8 @@ func (exMessageApi *ExMessageApi) CreateExMessage(c *gin.Context) {
 	// todo：加一段逻辑来生成code和pin
 	exMessage.Code = utils.GenerateCode()
 	exMessage.Pin = utils.BcryptHash(exMessage.Secret)
+	int0 := 0
+	exMessage.Visits = &int0
 	if err := exMessageService.CreateExMessage(exMessage); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
@@ -113,6 +115,46 @@ func (exMessageApi *ExMessageApi) FindExMessage(c *gin.Context) {
 	var exMessage MessageExpress.ExMessage
 	_ = c.ShouldBindQuery(&exMessage)
 	if err, reexMessage := exMessageService.GetExMessage(exMessage.ID); err != nil {
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+	} else {
+		response.OkWithData(gin.H{"reexMessage": reexMessage}, c)
+	}
+}
+
+// FindExMessageByCode 用code查询ExMessage
+// @Tags ExMessage
+// @Summary 用code查询ExMessage
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query MessageExpress.ExMessage true "用code查询ExMessage"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /exMessage/findExMessageByCode [get]
+func (exMessageApi *ExMessageApi) FindExMessageByCode(c *gin.Context) {
+	var exMessage MessageExpress.ExMessage
+	_ = c.ShouldBindQuery(&exMessage)
+	if err, reexMessage := exMessageService.GetExMessageByCode(exMessage.Code); err != nil {
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+	} else {
+		response.OkWithData(gin.H{"reexMessage": reexMessage}, c)
+	}
+}
+
+// FindExMessageByPin 用pin查询ExMessage
+// @Tags ExMessage
+// @Summary 用pin查询ExMessage
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query MessageExpress.ExMessage true "用pin查询ExMessage"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /exMessage/findExMessageByPin [get]
+func (exMessageApi *ExMessageApi) FindExMessageByPin(c *gin.Context) {
+	var exMessage MessageExpress.ExMessage
+	_ = c.ShouldBindQuery(&exMessage)
+	if err, reexMessage := exMessageService.GetExMessageByPin(exMessage.Pin); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {

@@ -45,6 +45,20 @@ func (exMessageService *ExMessageService) GetExMessage(id uint) (err error, exMe
 	return
 }
 
+// GetExMessage 根据code获取ExMessage记录
+// Author [piexlmax](https://github.com/piexlmax)
+func (exMessageService *ExMessageService) GetExMessageByCode(code string) (err error, exMessage MessageExpress.ExMessage) {
+	err = global.GVA_DB.Where("code = ?", code).First(&exMessage).Error
+	return
+}
+
+// GetExMessage 根据pin获取ExMessage记录
+// Author [piexlmax](https://github.com/piexlmax)
+func (exMessageService *ExMessageService) GetExMessageByPin(pin string) (err error, exMessage MessageExpress.ExMessage) {
+	err = global.GVA_DB.Where("pin = ?", pin).First(&exMessage).Error
+	return
+}
+
 // GetExMessageInfoList 分页获取ExMessage记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (exMessageService *ExMessageService) GetExMessageInfoList(info MessageExpressReq.ExMessageSearch) (err error, list interface{}, total int64) {

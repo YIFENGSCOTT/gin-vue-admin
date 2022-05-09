@@ -21,7 +21,9 @@ func (s *ExMessageRouter) InitExMessageRouter(Router *gin.RouterGroup) {
 		exMessageRouter.PUT("updateExMessage", exMessageApi.UpdateExMessage)              // 更新ExMessage
 	}
 	{
-		exMessageRouterWithoutRecord.GET("findExMessage", exMessageApi.FindExMessage)       // 根据ID获取ExMessage
-		exMessageRouterWithoutRecord.GET("getExMessageList", exMessageApi.GetExMessageList) // 获取ExMessage列表
+		exMessageRouterWithoutRecord.GET("findExMessage", exMessageApi.FindExMessage)             // 根据ID获取ExMessage
+		exMessageRouterWithoutRecord.GET("findExMessageByCode", exMessageApi.FindExMessageByCode) // 根据code获取ExMessage
+		exMessageRouterWithoutRecord.GET("findExMessageByPin", exMessageApi.FindExMessageByPin)   // 根据pin获取ExMessage
+		exMessageRouterWithoutRecord.GET("getExMessageList", exMessageApi.GetExMessageList)       // 获取ExMessage列表
 	}
 }

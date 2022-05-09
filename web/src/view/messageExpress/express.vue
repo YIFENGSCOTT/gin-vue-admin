@@ -47,7 +47,10 @@
               </el-input>
             </div>
             <div>
-              <el-button type="primary" style="margin: 20px" @click="submitFetch"
+              <el-button
+                type="primary"
+                style="margin: 20px"
+                @click="submitFetch"
                 >取出密文</el-button
               >
             </div>
@@ -68,6 +71,20 @@
         </el-table-column>
       </el-table>
     </el-dialog>
+
+    <el-dialog title="完成" v-model="dialogTable2Visible">
+      <el-table :data="secretnvisits" style="width: 100%">
+        <el-table-column label="密文已取回" prop="type"> </el-table-column>
+        <el-table-column label="" prop="name"> </el-table-column>
+        <el-table-column fixed="right" label="" width="60">
+          <template #default="scope">
+            <el-button type="text" size="small" @click="handleClick(scope.row)"
+              >复制到剪切板</el-button
+            >
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
@@ -78,7 +95,8 @@
 
 <script>
 import { createExMessage } from "@/api/exMessage";
-import { findExMessage } from "@/api/exMessage";
+import { findExMessageByCode } from "@/api/exMessage";
+import { findExMessageByPin } from "@/api/exMessage";
 
 export default {
   data() {
@@ -91,14 +109,25 @@ export default {
       select: "",
       radio1: "暗语",
       dialogTableVisible: false,
+      dialogTable2Visible: false,
       codenpin: [
         {
           type: "密钥",
-          name: "mymymymymymmymy",
+          name: "",
         },
         {
           type: "暗语",
-          name: "ayayayyayayayayay",
+          name: "",
+        },
+      ],
+      secretnvisits: [
+        {
+          type: "密文",
+          name: "",
+        },
+        {
+          type: "取出次数",
+          name: "",
         },
       ],
     };
@@ -106,9 +135,9 @@ export default {
   methods: {
     async submitMsg() {
       await createExMessage({ secret: this.textarea1 }).then((res) => {
-      console.log(res)
-      this.codenpin[0].name = res.data.pin
-      this.codenpin[1].name = res.data.code
+        console.log(res);
+        this.codenpin[0].name = res.data.pin;
+        this.codenpin[1].name = res.data.code;
       });
       this.dialogTableVisible = true;
     },
@@ -125,10 +154,27 @@ export default {
       document.body.removeChild(input);
     },
     async submitFetch() {
-      await findExMessage({flag: this.radio1, query: this.textarea2 }).then((res) => {
-      console.log(res)
-      });
-    }
+      if (this.radio1 === "暗语") {
+        console.log("using code");
+        await findExMessageByCode({ code: this.textarea2 }).then((res) => {
+          console.log(res);
+          this.secretnvisits[0].name = res.data.reexMessage.secret;
+          this.secretnvisits[1].name = res.data.reexMessage.visits;
+          this.dialogTable2Visible = true;
+        });
+      } else if (this.radio1 === "密钥") {
+        console.log("using pin");
+        await findExMessageByPin({ pin: this.textarea2 }).then((res) => {
+          console.log(res.data);
+          // alert(res.data.reexMessage.secret)
+          this.secretnvisits[0].name = res.data.reexMessage.secret;
+          this.secretnvisits[1].name = res.data.reexMessage.visits;
+          this.dialogTable2Visible = true;
+        });
+      }
+    },
   },
 };
 </script>
+
+

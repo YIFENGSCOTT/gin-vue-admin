@@ -1,6 +1,7 @@
 package EncryptionKey
 
 import (
+	"encoding/json"
 	"github.com/flipped-aurora/gin-vue-admin/server/global"
 	"github.com/flipped-aurora/gin-vue-admin/server/model/EncryptionKey"
 	EncryptionKeyReq "github.com/flipped-aurora/gin-vue-admin/server/model/EncryptionKey/request"
@@ -10,12 +11,29 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 	"gopkg.in/gomail.v2"
+	"io/ioutil"
+	"math/rand"
+	"net/http"
+	"strconv"
 )
 
 type EncryptionKeyApi struct {
 }
 
 var encryptionKeyService = service.ServiceGroupApp.EncryptionKeyServiceGroup.EncryptionKeyService
+
+type rollData struct {
+	QrCodeUrl string
+	Content string
+	Type int
+	QrCodeBase64 bool
+}
+
+type postResp struct {
+	Code int
+	Msg string
+	Data rollData
+}
 
 // CreateEncryptionKey 创建EncryptionKey
 // @Tags EncryptionKey
@@ -29,7 +47,35 @@ var encryptionKeyService = service.ServiceGroupApp.EncryptionKeyServiceGroup.Enc
 func (encryptionKeyApi *EncryptionKeyApi) CreateEncryptionKey(c *gin.Context) {
 	var encryptionKey EncryptionKey.EncryptionKey
 	_ = c.ShouldBindJSON(&encryptionKey)
-	keyContent := "test key content"
+	keyContent := "EK-" + strconv.FormatInt(int64(rand.Int()), 10)
+
+	//您的秘钥信息如下：
+	app_id := "kfofoph1fl3vfcen"
+	app_secret := "aWVJVGlPM2x1dWlZbjNxTFlRZDZ3dz09"
+
+	requestString := "https://www.mxnzp.com/api/qrcode/create/single?content=" +
+		keyContent +
+		"&size=500&type=0&" +
+		"app_id=" +
+		app_id +
+		"&app_secret=" +
+		app_secret
+
+	encryptionKey.KeyIllustrationUrl = requestString
+
+	client := http.Client{}
+	req,_ := http.NewRequest("GET", requestString,nil)
+	resp,_ := client.Do(req)
+
+	body,_ := ioutil.ReadAll(resp.Body)
+	bodyStr := string(body)
+	respMap := postResp{}
+	err := json.Unmarshal([]byte(bodyStr),&respMap)
+
+	if err != nil{
+		return
+	}
+
 	encryptionKey.KeyContent = keyContent
 	if err := encryptionKeyService.CreateEncryptionKey(encryptionKey); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
@@ -38,9 +84,15 @@ func (encryptionKeyApi *EncryptionKeyApi) CreateEncryptionKey(c *gin.Context) {
 		response.OkWithMessage("创建成功", c)
 	}
 
-	mailMsg := "Hello there, we recently received a request to set up your new encryption key for distrust.yifengsun.com. \n" +
-		"<h1 style=3D\"font-weight:700;word-break:break-word;font-size:46px;line-height:52px\">" + keyContent + " \n</h1>" +
-		"Please use this key to start or continuing a thread ;)"
+
+
+	mailMsg := "Hello there, <strong>Distrust</strong> recently received a request to set up your new encryption key for distrust.yifengsun.com: \n\n" +
+		"<h1 style=3D\"font-weight:700;word-break:break-word;font-size:46px;line-height:52px\"><code>" + keyContent + "</code>\n</h1>" +
+		"<img src=\""+ respMap.Data.QrCodeUrl +"\" alt=\"illustration\" height=\"120\" width=\"120\">"+
+		"<div>Please use this key to start a thread ;) \n\n</div>"+
+		"<div><strong>Thank you for participating in my graduation design/defense,</strong></div>"+
+		"<div>Sincerely,</div>"+
+		"<div>Yifeng Sun from Distrust</div>"
 	m := gomail.NewMessage()
 	m.SetHeader("From", "Distrust@sunyifeng.buzz")
 	m.SetHeader("To", encryptionKey.Beiyong)
@@ -49,9 +101,7 @@ func (encryptionKeyApi *EncryptionKeyApi) CreateEncryptionKey(c *gin.Context) {
 	m.SetBody("text/html", mailMsg)
 	//m.Attach("/home/Alex/lolcat.jpg")
 
-	//您的秘钥信息如下：
-	app_id := "kfofoph1fl3vfcen"
-	app_secret := "aWVJVGlPM2x1dWlZbjNxTFlRZDZ3dz09"
+
 
 	d := gomail.NewDialer("smtp.ym.163.com", 25, "distrust@sunyifeng.buzz", "Di42419629")
 

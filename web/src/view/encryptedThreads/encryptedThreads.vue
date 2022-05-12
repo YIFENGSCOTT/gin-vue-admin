@@ -66,8 +66,9 @@
     </div>
     <el-dialog title="更换密钥" v-model="dialogTableVisible">
       <div style="margin-top: 20px">
-        <el-input v-model="input1" placeholder="Please input">
-          <template #prepend>密钥</template>
+        <div style="margin-bottom: 20px; margin-left: 3px">请输入要切换的密钥</div>
+        <el-input v-model="input1" placeholder="您的19位数字密钥">
+          <template #prepend>Key-</template>
         </el-input>
       </div>
       <div style="display: flex; justify-content: flex-end; margin-top: 20px">

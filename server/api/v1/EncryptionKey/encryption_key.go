@@ -9,6 +9,7 @@ import (
 	"github.com/flipped-aurora/gin-vue-admin/server/service"
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"gopkg.in/gomail.v2"
 )
 
 type EncryptionKeyApi struct {
@@ -28,11 +29,35 @@ var encryptionKeyService = service.ServiceGroupApp.EncryptionKeyServiceGroup.Enc
 func (encryptionKeyApi *EncryptionKeyApi) CreateEncryptionKey(c *gin.Context) {
 	var encryptionKey EncryptionKey.EncryptionKey
 	_ = c.ShouldBindJSON(&encryptionKey)
+	keyContent := "test key content"
+	encryptionKey.KeyContent = keyContent
 	if err := encryptionKeyService.CreateEncryptionKey(encryptionKey); err != nil {
 		global.GVA_LOG.Error("创建失败!", zap.Error(err))
 		response.FailWithMessage("创建失败", c)
 	} else {
 		response.OkWithMessage("创建成功", c)
+	}
+
+	mailMsg := "Hello there, we recently received a request to set up your new encryption key for distrust.yifengsun.com. \n" +
+		"<h1 style=3D\"font-weight:700;word-break:break-word;font-size:46px;line-height:52px\">" + keyContent + " \n</h1>" +
+		"Please use this key to start or continuing a thread ;)"
+	m := gomail.NewMessage()
+	m.SetHeader("From", "Distrust@sunyifeng.buzz")
+	m.SetHeader("To", encryptionKey.Beiyong)
+	//m.SetAddressHeader("Cc", "dan@example.com", "Dan")
+	m.SetHeader("Subject", "Your new encryption key from distrust.yifengsun.com")
+	m.SetBody("text/html", mailMsg)
+	//m.Attach("/home/Alex/lolcat.jpg")
+
+	//您的秘钥信息如下：
+	app_id := "kfofoph1fl3vfcen"
+	app_secret := "aWVJVGlPM2x1dWlZbjNxTFlRZDZ3dz09"
+
+	d := gomail.NewDialer("smtp.ym.163.com", 25, "distrust@sunyifeng.buzz", "Di42419629")
+
+	// Send the email to Bob, Cora and Dan.
+	if err := d.DialAndSend(m); err != nil {
+		panic(err)
 	}
 }
 

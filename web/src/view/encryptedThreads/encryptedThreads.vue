@@ -85,15 +85,18 @@
     </el-dialog>
 
     <el-dialog title="新密钥" v-model="dialogTable2Visible">
+      <div>
+        为了保证通讯安全，请输入一个用来接收密钥的邮箱地址
+      </div>
       <div style="margin-top: 20px">
-        <el-input v-model="input1" placeholder="Please input">
-          <template #prepend>新密钥名称:</template>
+        <el-input v-model="email" placeholder="Please input">
+          <template #prepend>邮箱:</template>
         </el-input>
       </div>
 
       <el-button
         type="primary"
-        @click="showChangeKeyDialog"
+        @click="submitNewKey" style="margin-top: 20px"
         >创建密钥</el-button
       >
     </el-dialog>
@@ -110,6 +113,7 @@ import { createExMessage } from "@/api/exMessage";
 import { findExMessageByCode } from "@/api/exMessage";
 import { findExMessageByPin } from "@/api/exMessage";
 import { ref } from "vue";
+import { createEncryptionKey } from "@/api/encryptionKey";
 
 const currentDate = ref(new Date());
 
@@ -121,6 +125,8 @@ export default {
       input1: "",
       input2: "",
       input3: "",
+      email: "",
+      newKeyName:"",
       select: "",
       radio1: "暗语",
       dialogTableVisible: false,
@@ -154,6 +160,11 @@ export default {
     newKey() {
       this.dialogTable2Visible = true;
     },
+    async submitNewKey(){
+      await createEncryptionKey({ Beiyong: this.email }).then((res) => {
+        console.log(res);
+      });
+    }
   },
 };
 </script>

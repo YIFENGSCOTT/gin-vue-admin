@@ -23,15 +23,15 @@ type EncryptionKeyApi struct {
 var encryptionKeyService = service.ServiceGroupApp.EncryptionKeyServiceGroup.EncryptionKeyService
 
 type rollData struct {
-	QrCodeUrl string
-	Content string
-	Type int
+	QrCodeUrl    string
+	Content      string
+	Type         int
 	QrCodeBase64 bool
 }
 
 type postResp struct {
 	Code int
-	Msg string
+	Msg  string
 	Data rollData
 }
 
@@ -64,15 +64,15 @@ func (encryptionKeyApi *EncryptionKeyApi) CreateEncryptionKey(c *gin.Context) {
 	encryptionKey.KeyIllustrationUrl = requestString
 
 	client := http.Client{}
-	req,_ := http.NewRequest("GET", requestString,nil)
-	resp,_ := client.Do(req)
+	req, _ := http.NewRequest("GET", requestString, nil)
+	resp, _ := client.Do(req)
 
-	body,_ := ioutil.ReadAll(resp.Body)
+	body, _ := ioutil.ReadAll(resp.Body)
 	bodyStr := string(body)
 	respMap := postResp{}
-	err := json.Unmarshal([]byte(bodyStr),&respMap)
+	err := json.Unmarshal([]byte(bodyStr), &respMap)
 
-	if err != nil{
+	if err != nil {
 		return
 	}
 
@@ -84,14 +84,12 @@ func (encryptionKeyApi *EncryptionKeyApi) CreateEncryptionKey(c *gin.Context) {
 		response.OkWithMessage("创建成功", c)
 	}
 
-
-
 	mailMsg := "Hello there, <strong>Distrust</strong> recently received a request to set up your new encryption key for distrust.yifengsun.com: \n\n" +
 		"<h1 style=3D\"font-weight:700;word-break:break-word;font-size:46px;line-height:52px\"><code>" + keyContent + "</code>\n</h1>" +
-		"<img src=\""+ respMap.Data.QrCodeUrl +"\" alt=\"illustration\" height=\"120\" width=\"120\">"+
-		"<div>Please use this key to start a thread ;) \n\n</div>"+
-		"<div><strong>Thank you for participating in my graduation design/defense,</strong></div>"+
-		"<div>Sincerely,</div>"+
+		"<img src=\"" + respMap.Data.QrCodeUrl + "\" alt=\"illustration\" height=\"120\" width=\"120\">" +
+		"<div>Please use this key to start a thread ;) \n\n</div>" +
+		"<div><strong>Thank you for joining me in my graduation design/defense,</strong></div>" +
+		"<div>Sincerely,</div>" +
 		"<div>Yifeng Sun from Distrust</div>"
 	m := gomail.NewMessage()
 	m.SetHeader("From", "Distrust@sunyifeng.buzz")
@@ -100,8 +98,6 @@ func (encryptionKeyApi *EncryptionKeyApi) CreateEncryptionKey(c *gin.Context) {
 	m.SetHeader("Subject", "Your new encryption key from distrust.yifengsun.com")
 	m.SetBody("text/html", mailMsg)
 	//m.Attach("/home/Alex/lolcat.jpg")
-
-
 
 	d := gomail.NewDialer("smtp.ym.163.com", 25, "distrust@sunyifeng.buzz", "Di42419629")
 

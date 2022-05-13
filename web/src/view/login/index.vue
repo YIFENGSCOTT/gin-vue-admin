@@ -6,7 +6,6 @@
           <img
             class="login_panle_form_title_logo"
             :src="$GIN_VUE_ADMIN.appLogo"
-            alt
           >
           <p class="login_panle_form_title_p">{{ $GIN_VUE_ADMIN.appName }}</p>
         </div>
@@ -71,7 +70,8 @@
               style="width: 46%"
               size="large"
               @click="checkInit"
-            >前往初始化</el-button>
+              plain
+            >注册</el-button>
             <el-button
               type="primary"
               size="large"

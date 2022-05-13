@@ -4,7 +4,7 @@
 
 const config = {
   appName: 'Distrust',
-  appLogo: 'https://www.gin-vue-admin.com/img/logo.png',
+  appLogo: 'src/assets/nav_logo.png',
   showViteLogo: true
 }
 

@@ -81,6 +81,22 @@ export const findThread = (params) => {
 }
 
 // @Tags Thread
+// @Summary 用EK查询Thread
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query model.Thread true "用EK查询Thread"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /thread/findThread [get]
+export const findThreadByEK = (params) => {
+  return service({
+    url: '/thread/findThreadByEK',
+    method: 'get',
+    params
+  })
+}
+
+// @Tags Thread
 // @Summary 分页获取Thread列表
 // @Security ApiKeyAuth
 // @accept application/json

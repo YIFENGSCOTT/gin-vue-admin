@@ -21,7 +21,8 @@ func (s *EncryptionKeyRouter) InitEncryptionKeyRouter(Router *gin.RouterGroup) {
 		encryptionKeyRouter.PUT("updateEncryptionKey", encryptionKeyApi.UpdateEncryptionKey)              // 更新EncryptionKey
 	}
 	{
-		encryptionKeyRouterWithoutRecord.GET("findEncryptionKey", encryptionKeyApi.FindEncryptionKey)       // 根据ID获取EncryptionKey
-		encryptionKeyRouterWithoutRecord.GET("getEncryptionKeyList", encryptionKeyApi.GetEncryptionKeyList) // 获取EncryptionKey列表
+		encryptionKeyRouterWithoutRecord.GET("findEncryptionKey", encryptionKeyApi.FindEncryptionKey)                   // 根据ID获取EncryptionKey
+		encryptionKeyRouterWithoutRecord.GET("findEncryptionKeyByContent", encryptionKeyApi.FindEncryptionKeyByContent) // 根据ID获取EncryptionKey
+		encryptionKeyRouterWithoutRecord.GET("getEncryptionKeyList", encryptionKeyApi.GetEncryptionKeyList)             // 获取EncryptionKey列表
 	}
 }

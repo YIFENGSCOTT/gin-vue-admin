@@ -21,7 +21,8 @@ func (s *ThreadRouter) InitThreadRouter(Router *gin.RouterGroup) {
 		threadRouter.PUT("updateThread", threadApi.UpdateThread)              // 更新Thread
 	}
 	{
-		threadRouterWithoutRecord.GET("findThread", threadApi.FindThread)       // 根据ID获取Thread
-		threadRouterWithoutRecord.GET("getThreadList", threadApi.GetThreadList) // 获取Thread列表
+		threadRouterWithoutRecord.GET("findThread", threadApi.FindThread)         // 根据ID获取Thread
+		threadRouterWithoutRecord.GET("findThreadByEK", threadApi.FindThreadByEK) // 根据ID获取Thread
+		threadRouterWithoutRecord.GET("getThreadList", threadApi.GetThreadList)   // 获取Thread列表
 	}
 }

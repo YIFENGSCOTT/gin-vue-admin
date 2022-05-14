@@ -72,6 +72,8 @@ func (encryptionKeyApi *EncryptionKeyApi) CreateEncryptionKey(c *gin.Context) {
 	respMap := postResp{}
 	err := json.Unmarshal([]byte(bodyStr), &respMap)
 
+	encryptionKey.KeyIllustrationUrl = respMap.Data.QrCodeUrl
+
 	if err != nil {
 		return
 	}
@@ -180,6 +182,26 @@ func (encryptionKeyApi *EncryptionKeyApi) FindEncryptionKey(c *gin.Context) {
 	var encryptionKey EncryptionKey.EncryptionKey
 	_ = c.ShouldBindQuery(&encryptionKey)
 	if err, reencryptionKey := encryptionKeyService.GetEncryptionKey(encryptionKey.ID); err != nil {
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+	} else {
+		response.OkWithData(gin.H{"reencryptionKey": reencryptionKey}, c)
+	}
+}
+
+// FindEncryptionKeyByContent 用content查询EncryptionKey
+// @Tags EncryptionKey
+// @Summary 用content查询EncryptionKey
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query EncryptionKey.EncryptionKey true "用content查询EncryptionKey"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /encryptionKey/findEncryptionKeyByContent [get]
+func (encryptionKeyApi *EncryptionKeyApi) FindEncryptionKeyByContent(c *gin.Context) {
+	var encryptionKey EncryptionKey.EncryptionKey
+	_ = c.BindQuery(&encryptionKey)
+	if err, reencryptionKey := encryptionKeyService.GetEncryptionKeyByContent(encryptionKey.KeyContent); err != nil {
 		global.GVA_LOG.Error("查询失败!", zap.Error(err))
 		response.FailWithMessage("查询失败", c)
 	} else {

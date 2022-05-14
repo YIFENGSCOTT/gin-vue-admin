@@ -116,6 +116,26 @@ func (threadApi *ThreadApi) FindThread(c *gin.Context) {
 	}
 }
 
+// FindThreadByEK 用EK查询Thread
+// @Tags Thread
+// @Summary 用EK查询Thread
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query Thread.Thread true "用EK查询Thread"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /thread/findThread [get]
+func (threadApi *ThreadApi) FindThreadByEK(c *gin.Context) {
+	var thread Thread.Thread
+	_ = c.ShouldBindQuery(&thread)
+	if err, rethread := threadService.GetThreadByEK(thread.EncryptionKeyId); err != nil {
+		global.GVA_LOG.Error("查询失败!", zap.Error(err))
+		response.FailWithMessage("查询失败", c)
+	} else {
+		response.OkWithData(gin.H{"rethread": rethread}, c)
+	}
+}
+
 // GetThreadList 分页获取Thread列表
 // @Tags Thread
 // @Summary 分页获取Thread列表

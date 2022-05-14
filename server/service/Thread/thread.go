@@ -45,6 +45,14 @@ func (threadService *ThreadService) GetThread(id uint) (err error, thread Thread
 	return
 }
 
+// GetThreadByEK 根据EK获取Thread记录
+// Author [piexlmax](https://github.com/piexlmax)
+func (threadService *ThreadService) GetThreadByEK(EK *int) (err error, threads []Thread.Thread) {
+	err = global.GVA_DB.Where("encryption_key_id = ?", EK).Find(&threads).Error
+	err = nil
+	return
+}
+
 // GetThreadInfoList 分页获取Thread记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (threadService *ThreadService) GetThreadInfoList(info ThreadReq.ThreadSearch) (err error, list interface{}, total int64) {

@@ -80,6 +80,22 @@ export const findEncryptionKey = (params) => {
   })
 }
 
+// @Tags EncryptionKeyByContent
+// @Summary 用content查询EncryptionKey
+// @Security ApiKeyAuth
+// @accept application/json
+// @Produce application/json
+// @Param data query model.EncryptionKey true "用key_content查询EncryptionKey"
+// @Success 200 {string} string "{"success":true,"data":{},"msg":"查询成功"}"
+// @Router /encryptionKey/findEncryptionKey [get]
+export const findEncryptionKeyByContent = (params) => {
+  return service({
+    url: '/encryptionKey/findEncryptionKeyByContent',
+    method: 'get',
+    params
+  })
+}
+
 // @Tags EncryptionKey
 // @Summary 分页获取EncryptionKey列表
 // @Security ApiKeyAuth

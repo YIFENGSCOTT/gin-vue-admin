@@ -45,6 +45,13 @@ func (encryptionKeyService *EncryptionKeyService) GetEncryptionKey(id uint) (err
 	return
 }
 
+// GetEncryptionKeyByContent 根据content获取EncryptionKey记录
+// Author [piexlmax](https://github.com/piexlmax)
+func (encryptionKeyService *EncryptionKeyService) GetEncryptionKeyByContent(content string) (err error, encryptionKey EncryptionKey.EncryptionKey) {
+	err = global.GVA_DB.Where("key_content = ?", content).First(&encryptionKey).Error
+	return
+}
+
 // GetEncryptionKeyInfoList 分页获取EncryptionKey记录
 // Author [piexlmax](https://github.com/piexlmax)
 func (encryptionKeyService *EncryptionKeyService) GetEncryptionKeyInfoList(info EncryptionKeyReq.EncryptionKeySearch) (err error, list interface{}, total int64) {
